@@ -17,19 +17,17 @@
                 NewNodeAdd()
             Case "Edit"
                 EditNode()
-                'Case "Del"
-                '    DeleteNode()
         End Select
     End Sub
     Private Sub NewNodeAdd()
         If Me.cb_NodeType.SelectedItem.ToString() = "[Выберите значение]" Then
             'Сообщаем об ошибке
-            MsgBox("Значение не выбрано!", vbCritical, "Ошибка")
+            MsgBox("Тип ветки не выбран!", vbCritical, "Ошибка")
             Exit Sub
         Else
             If Me.txt_NodeName.Text = "" Then
                 'Сообщаем об ошибке
-                MsgBox("Название не введено!", vbCritical, "Ошибка")
+                MsgBox("Наименование не введено!", vbCritical, "Ошибка")
                 Exit Sub
             End If
             'Создаём новую ветвь
@@ -47,7 +45,7 @@
     Public Sub EditNode()
         If Me.txt_NodeName.Text = "" Then
             'Сообщаем об ошибке
-            MsgBox("Название не введено!", vbCritical, "Ошибка")
+            MsgBox("Наименование не введено!", vbCritical, "Ошибка")
             Exit Sub
         End If
         'Редактируем узел/ветвь
@@ -65,19 +63,4 @@
     Private Sub b_Cancel_Click(sender As Object, e As EventArgs) Handles b_Cancel.Click
         Me.Hide()
     End Sub
-End Class
-Public Class StructureNode
-    Inherits TreeNode
-
-    Public Node As TreeNode
-
-    Public Sub New(sNodeName As String, sNodeType As String)
-        'Объект - новая ветвь
-        Me.Node = New TreeNode(sNodeName)
-        'Название ветви
-        Me.Node.Text = sNodeName
-        'Тип ветви 
-        Me.Node.Tag = sNodeType
-    End Sub
-
 End Class

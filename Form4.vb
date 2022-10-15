@@ -2,11 +2,17 @@
 
 Public Class frm_SelectPerson
     Dim RequestParameters(2, 1) As String
-    Dim SelectionPerson As String
     Dim DS As New DataSet
     Dim DT As New DataTable
 
     Private Sub frm_SelectPerson_Load(sender As Object, e As EventArgs) Handles Me.Load
+        'Очищаем форму
+        ''Текст боксы
+        For Each itxt As TextBox In Me.Controls.OfType(Of TextBox)
+            itxt.Text = ""
+        Next
+        'Таблицу данных
+        Me.dgv_Person.DataSource = ""
 
         'Создаём таблицу данных
         DT = CreateNewDataTable(New DataTable)
@@ -35,22 +41,6 @@ Public Class frm_SelectPerson
                 Exit Sub
             End If
 
-            'If dt Is Nothing Or dt.Rows.Count = 0 Then
-
-            'Else
-            '    Dim OldTable As DataTable = Me.dgv_Person.DataSource
-            '    'Очищаем таблицу
-            '    OldTable.Rows.Clear()
-            '    'Удаляем столбец Id
-            '    dt.Columns.Remove("idPerson")
-            '    'Заполняем таблицу данными
-            '    For iRow = 0 To dt.Rows.Count - 1
-            '        OldTable.Rows.Add()
-            '        OldTable.Rows.Item(iRow).ItemArray = dt.Rows.Item(iRow).ItemArray
-            '    Next
-            '    'Подключаем источних данных
-            '    Me.dgv_Person.DataSource = OldTable
-            'End If
         End If
     End Sub
     Public Function CreateNewDataTable(SQLDataTable As DataTable) As DataTable
@@ -123,15 +113,7 @@ Public Class frm_SelectPerson
         End Try
 
     End Function
-    Private Sub frm_SelectPerson_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-        'Очищаем форму
-        ''Текст боксы
-        For Each itxt As TextBox In Me.Controls.OfType(Of TextBox)
-            itxt.Text = ""
-        Next
-        'Таблицу данных
-        Me.dgv_Person.DataSource = ""
-    End Sub
+
     Private Sub b_Cancel_Click(sender As Object, e As EventArgs) Handles b_Cancel.Click
         'Закрываем форму
         Me.Hide()
@@ -154,7 +136,8 @@ Public Class frm_SelectPerson
         frm_Home.Show()
     End Sub
 
-    Private Sub dgv_Person_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv_Person.CellContentClick
-
+    Private Sub frm_SelectPerson_FormClosed(sender As Object, e As FormClosedEventArgs) Handles MyBase.FormClosed
+        'Переходим на начальную форму
+        frm_Home.Show()
     End Sub
 End Class

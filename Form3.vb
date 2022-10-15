@@ -6,22 +6,8 @@ Public Class frm_GuidePerson
     Public EditStatus As Boolean
 
     Private Sub frm_GuidePerson_Load(sender As Object, e As EventArgs) Handles Me.Load
-        'TODO: данная строка кода позволяет загрузить данные в таблицу "ManagementDataSet.Person". При необходимости она может быть перемещена или удалена.
+        'Загружаем данные в таблицу 
         Me.PersonTableAdapter.Fill(Me.ManagementDataSet.Person)
-
-        'Dim RequestParameters() As String = {"*"}
-        ''Загружаем данные из MS SQL в таблицу
-        'Dim dt As DataTable = LoadGridFromDB(RequestParameters)
-        'If dt Is Nothing Or dt.Rows.Count = 0 Then
-        '    MsgBox("Поиск не дал результатов!", vbInformation, "Результат")
-        '    Exit Sub
-        'Else
-        '    Dim NewTable = CreateNewDataTable(dt)
-        '    If NewTable IsNot Nothing Then
-        '        'Подключаем источних данных
-        '        Me.dgv_Person.DataSource = NewTable
-        '    End If
-        'End If
     End Sub
     Private Sub tsb_AddPerson_Click(sender As Object, e As EventArgs) Handles tsb_AddPerson.Click
         'Переменная для работы с DataGridView
@@ -50,6 +36,8 @@ Public Class frm_GuidePerson
             If tbs_EditPerson.Checked = False Then
                 'Закрываем возможность редактирования
                 cCell.ReadOnly = True
+                'Обновляем данные в БД
+                Me.PersonTableAdapter.Update(Me.ManagementDataSet.Person)
             Else
                 'Открываем возможность редактирования
                 cCell.ReadOnly = False
@@ -65,16 +53,17 @@ Public Class frm_GuidePerson
         Me.PersonTableAdapter.Update(Me.ManagementDataSet.Person)
     End Sub
     Private Sub dgv_Person_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgv_Person.CellClick
-        Try
+        'Обрабатываем выделение ячейки в таблице
+        If e.ColumnIndex > 0 Then
             Dim cCell As DataGridViewCell = dgv_Person.Rows(e.RowIndex).Cells(e.ColumnIndex)
             If tbs_EditPerson.Checked = False Then
+                'Отклчаем возможность редактирования
                 cCell.ReadOnly = True
             Else
+                'Включаем возможность редактирования
                 cCell.ReadOnly = False
             End If
-        Catch ex As Exception
-
-        End Try
+        End If
     End Sub
 
     Private Sub frm_GuidePerson_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
@@ -92,29 +81,8 @@ Public Class frm_GuidePerson
 
     End Sub
 
-    'Private Sub frm_GuidePerson_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-    '    Dim ds As DataSet()
-
-    '    'Список физических лиц
-    '    Dim NewTeam As New Team
-    '    'Новые записи
-    '    Dim NewRows As DataGridViewRowCollection = Me.dgv_Person.Rows
-    '    'Добавляем записи в коллекцию физических лиц
-    '    For Each iRow As DataGridViewRow In NewRows
-    '        Dim NewPerson As New Person(iRow.Cells(0).Value, iRow.Cells(1).Value, iRow.Cells(2).Value)
-    '        NewTeam.Items.Add(NewPerson)
-    '    Next
-    '    'Загружаем данные из таблицы в MS SQL
-    '    If SQLNewRecord(NewTeam) = "True" Then
-    '        MsgBox("Физические лица добавлены в БД", vbInformation, "Успех!")
-    '    Else
-    '        MsgBox("Ошибка в процедуре обновления БД", vbCritical, "Ошибка!")
-    '    End If
-    '    'Открываем стартовую страницу
-    '    frm_Home.Show()
-    'End Sub
 End Class
-Public Class Person
+Public Class Person 'Класс для работы с перональными данными
     Public Property Family As String
     Public Property Name As String
     Public Property Patronymic As String
@@ -126,7 +94,7 @@ Public Class Person
     End Sub
 End Class
 
-Public Class Team
+Public Class Team  'Класс для работы с коллективом
     Public Property Items As New Collection
     Public Sub Add(aPerson As Person)
         Items.Add(aPerson, aPerson.Family & "." & aPerson.Name & "." & aPerson.Patronymic)
